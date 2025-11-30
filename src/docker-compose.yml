@@ -1,0 +1,133 @@
+version: '3.6'
+
+services:
+  proxy:
+    build: 
+      context: .
+      dockerfile: Dockerfile.proxy
+    image: proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      cicd_net:
+        aliases:
+          - git.bench.test
+          - drone.bench.test
+          - registry.bench.test
+
+  gitea:
+    build: 
+      context: .
+      dockerfile: Dockerfile.gitea
+    image: base-gitea
+    restart: unless-stopped
+    environment:
+      - DRONE_GITEA_CLIENT_ID=45eaef2d-a248-4a16-b56e-cc0b698d26cd
+      - DRONE_GITEA_CLIENT_SECRET_HASH=$$2a$$10$$TIFYfmOqwN1p6tcrRCRR6OCPXLcBqVE1LabQSz26iNk5pKgqFh376
+      - DRONE_GITEA_URL=https://drone.bench.test/login
+      - DRONE_SERVER_HOST=drone.bench.test
+      - MAIL_DOMAIN=bench.test
+      - ADMIN_PASSWORD=f99324a6d3d805268c94ce914a5eca20
+    networks:
+      cicd_net:
+        aliases:
+          - internalgit.bench.test
+
+  drone:
+    build: 
+      context: .
+      dockerfile: Dockerfile.drone
+    image: base-drone
+    restart: unless-stopped
+    environment:
+      - DRONE_GITEA_SERVER=https://git.bench.test/
+      - DRONE_GIT_ALWAYS_AUTH=false
+      - DRONE_RPC_SECRET=whZfjQQpAyPISaIy5pm0axVsF9Z0oXeA
+      - DRONE_SERVER_PROTO=https
+      - DRONE_SERVER_HOST=drone.bench.test
+      - DRONE_TLS_AUTOCERT=false
+      - DRONE_GITEA_CLIENT_ID=45eaef2d-a248-4a16-b56e-cc0b698d26cd
+      - DRONE_GITEA_CLIENT_SECRET=gto_161nrqo4z8bjxcauagzhqdzzu5639395gdo3zkabap7vcp33ncqf
+      - COMPANY_NAME=benchmark
+      - MAIL_DOMAIN=bench.test
+    networks:
+      cicd_net:
+        aliases:
+          #- drone.bench.test
+          - internaldrone.bench.test
+
+  drone-runner-vm:
+    build: 
+      context: .
+      dockerfile: Dockerfile.vmrunner
+    image: vm-runner
+    restart: unless-stopped
+    depends_on:
+      - drone
+    networks:
+      cicd_net:
+        aliases:
+          - internalrunnervm.bench.test
+    # privileged: true
+
+  drone-runner-local:
+    build: 
+      context: .
+      dockerfile: Dockerfile.localrunner
+    image: local-runner
+    restart: unless-stopped
+    environment:
+      - DRONE_RPC_PROTO=https
+      - DRONE_RPC_HOST=drone.bench.test
+      - DRONE_RPC_SECRET=whZfjQQpAyPISaIy5pm0axVsF9Z0oXeA
+      - DRONE_RUNNER_CAPACITY=3
+      - DRONE_RUNNER_NETWORKS=cicd_net
+      - DRONE_RUNNER_NAME=runner-local
+      - DRONE_RPC_SKIP_VERIFY=true
+      - skip_verify=true
+      - DRONE_RUNNER_VOLUMES=/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt,/etc/docker/certs.d:/etc/docker/certs.d
+      - DRONE_RUNNER_LABELS=environment:local
+      - DRONE_DEBUG=true
+      - DRONE_TRACE=true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - drone
+    networks:
+      cicd_net:
+        aliases:
+          - internalrunnerlocal.bench.test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+      - /etc/docker/certs.d:/etc/docker/certs.d
+  
+  registry:
+    build:
+      context: .
+      dockerfile: Dockerfile.registry
+    image: registry
+    restart: unless-stopped
+    environment:
+      - REGISTRY_AUTH=htpasswd
+      - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+      - REGISTRY_HTTPS_ADDR=registry.bench.test:443
+    ports:
+      - "5000:5000"
+    networks:
+      cicd_net:
+        aliases:
+          - internalregistry.bench.test
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+
+
+networks:
+  cicd_net:
+    name: cicd_net
+  prod_net:
+    name: prod_net

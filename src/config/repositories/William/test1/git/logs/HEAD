@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 c4ae90295efddb2316d22effa355bfa74d0b714e William Bundgaard <william.bundgd@gmail.com> 1742378772 +0100	commit (initial): init
+c4ae90295efddb2316d22effa355bfa74d0b714e 0000000000000000000000000000000000000000 William Bundgaard <william.bundgd@gmail.com> 1742378776 +0100	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 c4ae90295efddb2316d22effa355bfa74d0b714e William Bundgaard <william.bundgd@gmail.com> 1742378776 +0100	Branch: renamed refs/heads/master to refs/heads/main
+c4ae90295efddb2316d22effa355bfa74d0b714e 534a7b0f6f8cd148117f0c460a33c6f72b3777c8 William Bundgaard <william.bundgd@gmail.com> 1742380549 +0100	commit: running pipelines on VM
+534a7b0f6f8cd148117f0c460a33c6f72b3777c8 fe30d7b5f5c1ce69fc9efbeef218e9977edb42ca William Bundgaard <william.bundgd@gmail.com> 1742385723 +0100	commit: use alpine image in stead of ubuntu

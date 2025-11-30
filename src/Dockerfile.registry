@@ -1,0 +1,16 @@
+FROM registry:2.8
+RUN apk add --no-cache bash curl docker docker
+
+RUN echo '{"insecure-registries" : ["registry.bench.test:443"]} >> /etc/docker/daemon.json'
+RUN mkdir -p /etc/docker/certs.d/registry.bench.test
+
+COPY registry/config/htpasswd /auth/htpasswd
+COPY registry/config/config.json /root/.docker/config.json
+
+COPY registry/init.sh /tmp/init.sh
+RUN chmod +x /tmp/init.sh
+COPY proxy/ssl/certCA.crt /etc/docker/certs.d/regsitry.bench.test/ca.crt
+COPY proxy/ssl/certCA.pem /tmp/certCA.pem
+RUN cat /tmp/certCA.pem >> /etc/ssl/certs/ca-certificates.crt
+
+ENTRYPOINT [ "/tmp/init.sh" ]

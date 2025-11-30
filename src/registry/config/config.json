@@ -1,0 +1,7 @@
+{
+        "auths": {
+                "registry.bench.test": {
+                        "auth": "ZG9ja2VyX3Vzcjpkb2NrZXJfcHN3"
+                }
+        }
+}

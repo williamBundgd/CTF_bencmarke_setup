@@ -1,0 +1,15 @@
+assets: true
+clone_addr: http://localhost:3000/William/test2
+comments: true
+description: ""
+is_private: false
+issues: true
+labels: true
+milestones: true
+name: test2
+original_url: https://git.bench.test/William/test2
+owner: William
+pulls: true
+releases: true
+service_type: 3
+wiki: true

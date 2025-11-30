@@ -1,0 +1,24 @@
+# NOTE: This dockerfile creates a local drone runner.
+#       This setup requeres a mounted docker.socket to work.
+#       ---
+#       If you cannot mount the docker.socket of you host, use the VM setup in stead.
+#       If you don't have internet access at runtime, I recommend useing the VM setup in stead,
+#       as it can pull images at build time.
+
+FROM drone/drone-runner-docker:1 AS base
+
+# VOLUME [ "/var/run/docker.sock:/var/run/docker.sock" ]
+EXPOSE 3000:3000
+
+COPY proxy/ssl/certCA.pem /tmp/certCA.pem
+RUN cat /tmp/certCA.pem >> /etc/ssl/certs/ca-certificates.crt
+
+RUN apk add --update --no-cache python3 py3-pip && \
+    ln -sf python3 /usr/bin/python && \
+    python3 --version
+
+COPY registry/config/config.json /root/.docker/config.json
+ENV DRONE_DOCKER_CONFIG=/root/.docker/config.json
+
+
+RUN echo '{"registry-mirrors": ["https://registry.bench.test"], "insecure-registries" : ["registry.bench.test:443"]} >> /etc/docker/daemon.json'

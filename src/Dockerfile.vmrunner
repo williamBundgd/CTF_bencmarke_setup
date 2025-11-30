@@ -1,0 +1,48 @@
+# NOTE: This dockerfile creates a VM, to run a drone runner container.
+#       The VM is run at buildtime for some preconfiguration, 
+#       and is then spun up at runtime
+#       ---
+#       If you need a drone runner, but can't mount the hosts docker.socket,
+#       and/or any internet access, use this setup.
+
+# WARN: There can be some proplems with the VM "freezing" up at runtime on some systems,
+#       However, it seems to work fine with Haaukins if you need it.
+#       The ploblem likely arises due to harware limitations paired with the 
+#       harsh limitations that it needs to follow to be compatible with deplotyment systems like Haaukins.
+#       It is a sort of I/O problem where SLiRP (a standin for network card in the VM) does not get the memory 
+#       and CPU time needed to handle all the network traffic. When big I/O trafic occures, SLiRP gets filed,
+#       blockes, and never flushes, rendering the VM unusable as it cannot comunicate with Drone or Gitea anymore.
+#       Problem is "solved" by using bigger infastructure.
+
+FROM alpine:3.22.1
+RUN apk add qemu-system-x86_64 xorriso bash openssh --no-cache
+ADD base-runner/alpine.tar.gz /
+
+COPY registry/config/config.json /root/.docker/config.json
+ENV DRONE_DOCKER_CONFIG=/root/.docker/config.json
+
+# Start the VM and run the preconfiguration scrips
+WORKDIR /tmp/preconfig
+COPY proxy/ssl/certCA.pem .
+COPY base-runner/preconfig.sh init.sh
+WORKDIR /
+RUN mkisofs -o /preconfig.iso /tmp/preconfig
+RUN qemu-system-x86_64 \
+    -m 512M \
+    -nic user \
+    -hda /alpine.qcow2 \
+    -cdrom /preconfig.iso \
+    -nographic 
+
+WORKDIR /tmp/config
+COPY base-runner/init.sh .
+WORKDIR /
+RUN mkisofs -o /config.iso /tmp/config
+CMD qemu-system-x86_64 \
+    -m 2048M \
+    -nic user \
+    -hda /alpine.qcow2 \
+    -cdrom /config.iso \
+    -serial file:/var/log/vm.log \
+    -daemonize \
+  && tail -f /var/log/vm.log

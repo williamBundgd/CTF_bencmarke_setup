@@ -1,0 +1,8 @@
+htpasswd -cB htpasswd {username}
+# Then write whichever password you want
+
+# Copy the line from the htpasswd file into config/htpasswd
+# If you change the password the runner gives to the pipeline, run the following command
+echo {username}:{password} | base64
+# and copy it into the config/config.json file as the "auth" element
+# This file is given to the runner, and allows the pipelines to access the registry
