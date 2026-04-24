@@ -34,7 +34,7 @@ Please feel free to change, remove or add to the architecture in any way you see
 
 ## How to run locally
 
-This project was developed with linux in mind, so it might not work well for other OS.
+This project was developed with linux (Ubuntu) in mind, so it might not work well for other OS like Windows.
 
 You need docker with docker compose installed on a linux computer.
 
@@ -47,3 +47,9 @@ You need docker with docker compose installed on a linux computer.
 - You should be able to see both a Gitea server and a Drone CI server
 - Log in to the servers with username = William, password = password
 - Please note that I have had some trouble getting the VM in the runner docker container to work. It does not work on all systems, but it seems to work well on Haaukins servers.
+
+## Troubleshooting
+
+### Old certificates
+
+You may experience errors due to old / expired ca-certificates. You can replace the certificates used by the containers by navigating to the `{path_to_project}/src/proxy/ssl` and running the `create_certs.sh`
