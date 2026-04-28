@@ -77,9 +77,9 @@ if [ -f "/data/fresh_install" ]; then
                 echo "Invalid secret: $secretname"
                 continue
             fi
-            # check if secretvalue starts with b64: and decode it
+            # check if secretvalue starts with b64: and encode it
             if [[ $secretvalue == b64:* ]]; then
-                secretvalue=$(echo $secretvalue | cut -d: -f2 | base64 -d)
+                secretvalue=$(echo $secretvalue | cut -d: -f2 | base64)
             fi
             echo "Creating secret: $secretname"
             if [ -z "$repo" ]; then
