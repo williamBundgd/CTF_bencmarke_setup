@@ -3,3 +3,5 @@
 09e8cfadcc640759d473173ae22035d753557e2e 0414d336309984914c006c95a0a0098f0e1a738d Anonymous <person@anon.com> 1777391711 +0200	commit (amend): init
 0414d336309984914c006c95a0a0098f0e1a738d 0414d336309984914c006c95a0a0098f0e1a738d Anonymous <person@anon.com> 1777391711 +0200	commit (amend): init
 0414d336309984914c006c95a0a0098f0e1a738d d08e3f13120fa7ad3fba63ac2e3fa2e9fc6f10f2 Anonymous <person@anon.com> 1777391712 +0200	commit (amend): init
+d08e3f13120fa7ad3fba63ac2e3fa2e9fc6f10f2 0000000000000000000000000000000000000000 Anonymous <person@anon.com> 1777393533 +0200	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 d08e3f13120fa7ad3fba63ac2e3fa2e9fc6f10f2 Anonymous <person@anon.com> 1777393533 +0200	Branch: renamed refs/heads/master to refs/heads/main
