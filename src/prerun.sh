@@ -41,7 +41,7 @@ if [ -f $CA_FILE ]; then
         clear
         echo "You should now be ready to go"
         echo ""
-        echo "Username: William"
+        echo "Username: Anonymous"
         echo "Password: password"
 else
         echo "File $CA_FILE does not exist."

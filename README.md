@@ -45,7 +45,7 @@ You need docker with docker compose installed on a linux computer.
 
 - got to git.bench.test and drone.bench.test in you browser. 
 - You should be able to see both a Gitea server and a Drone CI server
-- Log in to the servers with username = William, password = password
+- Log in to the servers with username = Anonymous, password = password
 - Please note that I have had some trouble getting the VM in the runner docker container to work. It does not work on all systems, but it seems to work well on Haaukins servers.
 
 ## Troubleshooting
